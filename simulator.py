@@ -7,13 +7,14 @@ visualization.
 """
 
 import networkx as nx
-import numpy as np
 import pandas as pd
+
 import instance_generator
 import solver
 
+import argparse
 
-#TODO the experiment code in here has a ton of repetition - think about how this could be better formatted?
+
 class Simulator:
     """Object that solves instances of matching problems given to it and aggregates the results in a pretty manner.
 
@@ -31,7 +32,6 @@ class Simulator:
         self.instance_generator = instance_generate
         self.history = {'id': [], 'val_index': [], 'size': [], 'valuation':[], 'algo': [], 'distortion': []}
         self.id = 1
-
 
     def serial_dictatorship_experiment(self, val_index, val_type, G, size=None, agent_cap=None):
         """Finds the distortion of running serial dictatorship on the given input.
@@ -57,7 +57,6 @@ class Simulator:
         self.history['algo'].append('serial_dictatorship')
         self.history['distortion'].append(solver.calculate_modified_distortion(G,M,prio='pareto'))
 
-
     def partial_max_matching_experiment(self, val_index, val_type, G, m, size=None, agent_cap=None):
         """Finds the distortion of running PartialMaxMatching on the given input.
         
@@ -82,9 +81,8 @@ class Simulator:
         self.history['val_index'].append(val_index)
         self.history['size'].append(size)
         self.history['valuation'].append(val_type)
-        self.history['algo'].append('partial_max_matching'+ '_' + str(m))
-        self.history['distortion'].append(solver.calculate_distortion(G,M_0))        
-
+        self.history['algo'].append('partial_max_matching' + '_' + str(m))
+        self.history['distortion'].append(solver.calculate_distortion(G, M_0))
 
     def modified_max_matching_experiment(self, val_index, val_type, G, prio='pareto', size=None, agent_cap=None):
         """Finds the distortion of running ModifiedMaxMatching on the given input.
@@ -110,7 +108,6 @@ class Simulator:
         self.history['algo'].append('modified_max_matching')
         self.history['distortion'].append(solver.calculate_modified_distortion(G,M_0,prio))
 
-
     def top_trading_cycles_experiment(self, val_index, val_type, G, size=None, agent_cap=None):
         """Finds the distortion of running top trading cycles on the given input.
         
@@ -133,7 +130,6 @@ class Simulator:
         self.history['valuation'].append(val_type)
         self.history['algo'].append('ttc_matching')
         self.history['distortion'].append(solver.calculate_modified_distortion(G,M,prio='pareto'))
-
     
     def epsilon_max_matching_experiment(self, val_index, val_type, G, epsilon, size=None, agent_cap=None):
         """Finds the distortion of running epsilon max matching on the given input.
@@ -160,7 +156,6 @@ class Simulator:
         self.history['algo'].append('epsilon_max_matching'+str(epsilon))
         self.history['distortion'].append(solver.calculate_distortion(G,M_0))
 
-
     def epsilon_max_matching_prio_experiment(self, val_index, val_type, G, epsilon, prio='pareto', size=None, agent_cap=None):
         """Finds the distortion of running epsilon max matching on the given input.
         
@@ -185,8 +180,7 @@ class Simulator:
         self.history['algo'].append('epsilon_max_matching '+prio+str(epsilon))
         self.history['distortion'].append(solver.calculate_modified_distortion(G,M,prio))
 
-
-    #TODO fix inconsistent casing
+    # TODO fix inconsistent casing
     def twothirds_max_matching_experiment(self, val_index, val_type, G, prio, size=None, agent_cap=None):
         """Finds the distortion of twothirds_max_matching on the given input.
         
@@ -235,65 +229,40 @@ class Simulator:
         self.history['distortion'].append(solver.calculate_modified_distortion(G,M_0,prio='pareto'))
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     instantiator = instance_generator.InstanceGenerator(True)
     sim = Simulator(instantiator)
-    # for n in [5,10,20,50,100]: # adjust the number of intervals here
-    #     print('current batch is', n) 
 
-    #     for j in range(20): # adjust number of trials per n here
+    parser = argparse.ArgumentParser("big boi Bhomas")
+    parser.add_argument("--scale", type=str, default="1.", choices=["0.2", "1", "5"])
+    parser.add_argument("--norm", type=str, default="range", choices=["range", "sum"])
 
-    #         G = instantiator.generate_unit_range_arrow(n, -1) #adjust the valuation generation method here
-    #         val_index = instantiator.index-1
-    #         val_type = 'unit_range_arrow_-1'
+    args = parser.parse_args()
 
-    #         sim.serial_dictatorship_experiment(val_index,val_type,G)
-    #         sim.updated_hybrid_max_matching_experiment(val_index,val_type,G)
-    #         sim.top_trading_cycles_experiment(val_index,val_type,G)
-    #         sim.epsilon_max_matching_experiment(val_index,val_type,G,1)
-    #         sim.epsilon_max_matching_experiment(val_index,val_type,G,0.1)
+    val_type = f"theta{args.scale}unit{args.norm}"
 
-    
-    # df = pd.DataFrame(sim.history)
-    # df.to_csv("C:/Users/sqshy/Desktop/University/Fifth Year/research/DistortionSim/updateddata/unit_range_arrow_-1_pareto.csv") #adjust path name here
+    for size in [5, 10, 20, 50, 100]:
+        filename = f"rdata/ord_n{size}_theta{args.scale}.txt"
+        print('current n value is', size)
 
-    # df = pd.Series(sim.instance_generator.history)
-    # df.to_csv("C:/Users/sqshy/Desktop/University/Fifth Year/research/DistortionSim/updateddata/unit_range_arrow_-1_pareto.csv") #adjust instance data path name here
-
-    # current experiment: theta=0.2, val=unit_range, prio=pareto
-
-
-
-
-
-
-
-    val_type = "theta1unitrange" #adjust valuation name here
-
-    filenames = ["rdata/ord_n5_theta1.txt", "rdata/ord_n10_theta1.txt", "rdata/ord_n20_theta1.txt", "rdata/ord_n50_theta1.txt", "rdata/ord_n100_theta1.txt"] #adjust input files here
-    sizes = [5,10,20,50,100]
-
-    for j in range(len(sizes)):
-        print('current n value is', sizes[j])
-
-        G_list = instantiator.generate_list_from_ordinal_preferences(filenames[j], sizes[j], 100, "unit_range") #adjust unit-range vs unit-sum here
+        G_list = instantiator.generate_list_from_ordinal_preferences(filename, size, 100, f"unit_{args.norm}")
         val_index = instantiator.index - 100
 
         for i in range(len(G_list)):
             G = G_list[i]
 
-            #adjust experiments here
-            sim.serial_dictatorship_experiment(val_index,val_type,G)
-            sim.top_trading_cycles_experiment(val_index,val_type,G)
-            sim.epsilon_max_matching_prio_experiment(val_index,val_type,G,1,prio='pareto')
-            sim.epsilon_max_matching_prio_experiment(val_index,val_type,G,0.1,prio='pareto')
-            sim.modified_max_matching_experiment(val_index,val_type,G,prio='pareto')
+            # adjust experiments here
+            sim.serial_dictatorship_experiment(val_index, val_type, G)
+            sim.top_trading_cycles_experiment(val_index, val_type, G)
+            sim.epsilon_max_matching_prio_experiment(val_index, val_type, G, 1, prio='pareto')
+            sim.epsilon_max_matching_prio_experiment(val_index, val_type, G, 0.1, prio='pareto')
+            sim.modified_max_matching_experiment(val_index, val_type, G, prio='pareto')
 
             val_index += 1
 
     # adjust naming conventions here
-    s = "ijcaidata/"+val_type+".csv"
-    s_instances = "ijcaidata/"+val_type+".csv"
+    s = "ijcaidata/" + val_type + ".csv"
+    s_instances = "ijcaidata/" + val_type + ".csv"
 
     df = pd.DataFrame(sim.history)
     df.to_csv(s)
