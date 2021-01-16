@@ -264,8 +264,12 @@ if __name__ == '__main__':
             val_index += 1
 
     # adjust naming conventions here
-    s = os.path.join(args.save_dir, "ijcaidata", val_type + ".csv")
-    s_instances = os.path.join(args.save_dir, "ijcaidata", val_type + ".csv")
+    data_dir = os.path.join(args.save_dir, "ijcaidata")
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+
+    s = os.path.join(val_type + ".csv")
+    s_instances = os.path.join(val_type + ".csv")
 
     df = pd.DataFrame(sim.history)
     df.to_csv(s)
