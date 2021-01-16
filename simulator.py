@@ -6,13 +6,14 @@ visualization.
 
 """
 
+import argparse
+import os
+
 import networkx as nx
 import pandas as pd
 
 import instance_generator
 import solver
-
-import argparse
 
 
 class Simulator:
@@ -236,6 +237,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser("big boi Bhomas")
     parser.add_argument("--scale", type=str, default="1.", choices=["0.2", "1", "5"])
     parser.add_argument("--norm", type=str, default="range", choices=["range", "sum"])
+    parser.add_argument("--save_dir", type=str, default="./")
 
     args = parser.parse_args()
 
@@ -261,8 +263,8 @@ if __name__ == '__main__':
             val_index += 1
 
     # adjust naming conventions here
-    s = "ijcaidata/" + val_type + ".csv"
-    s_instances = "ijcaidata/" + val_type + ".csv"
+    s = os.path.join(args.save_dir, "ijcaidata", val_type + ".csv")
+    s_instances = os.path.join(args.save_dir, "ijcaidata", val_type + ".csv")
 
     df = pd.DataFrame(sim.history)
     df.to_csv(s)
