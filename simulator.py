@@ -238,6 +238,7 @@ if __name__ == '__main__':
     parser.add_argument("--scale", type=str, default="1.", choices=["0.2", "1", "5"])
     parser.add_argument("--norm", type=str, default="range", choices=["range", "sum"])
     parser.add_argument("--save_dir", type=str, default="./")
+    parser.add_argument("--ckpt_path", type=str, default="./")
 
     args = parser.parse_args()
 
