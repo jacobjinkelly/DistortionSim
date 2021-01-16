@@ -268,8 +268,8 @@ if __name__ == '__main__':
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)
 
-    s = os.path.join(val_type + ".csv")
-    s_instances = os.path.join(val_type + ".csv")
+    s = os.path.join(data_dir, val_type + ".csv")
+    s_instances = os.path.join(data_dir, val_type + ".csv")
 
     df = pd.DataFrame(sim.history)
     df.to_csv(s)
