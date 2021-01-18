@@ -259,7 +259,7 @@ if __name__ == '__main__':
             sim.top_trading_cycles_experiment(val_index, val_type, G)
             sim.epsilon_max_matching_prio_experiment(val_index, val_type, G, 1, prio='pareto')
             sim.epsilon_max_matching_prio_experiment(val_index, val_type, G, 0.1, prio='pareto')
-            sim.modified_max_matching_experiment(val_index, val_type, G, prio='pareto')
+            sim.updated_hybrid_max_matching_experiment(val_index, val_type, G)
 
             val_index += 1
 
